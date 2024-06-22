@@ -23,6 +23,7 @@ typedef struct MarkovNode{
 typedef struct MarkovNodeFrequency{
     struct MarkovNode* markov_node;
     int frequency;
+//    int freq_size_to_node;
     // any other fields you need
 } MarkovNodeFrequency;
 

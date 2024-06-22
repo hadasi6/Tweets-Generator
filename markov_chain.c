@@ -1,5 +1,9 @@
 #include "markov_chain.h"
 #include <string.h>
+
+#define ENDS_SENTENCE '.'   //todo-meybe import from tweets?
+
+
 /**
  * Get random number between 0 and max_number [0, max_number).
  * @param max_number
@@ -21,8 +25,6 @@ int get_random_number(int max_number)
  */
 Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 {
-  Node *markov_first_llist = (markov_chain->database)->first; //todo -del?
-  Node *markov_last_llist = (markov_chain->database)->last; //todo -del
   int markov_size_llist = (markov_chain->database)->size;
   if (markov_chain==NULL || !data_ptr)         //todo - necessary?
     return NULL;
@@ -53,15 +55,25 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
   if (get_Node)
     return get_Node;
   MarkovNode *markov_node = calloc(1,sizeof (MarkovNode));
-  //todo
+  if (!markov_node)
+//    printf (ALLOCATION_ERROR_MASSAGE); //TODO-maybe print in main?
+    return NULL;
+
   char * data = malloc (strlen (data_ptr)+1);
-  //todo
-  //todo-free
+  if (!data)
+  {
+    free (markov_node);
+    markov_node = NULL;
+    return NULL;
+  }
   data = strcpy (data, data_ptr);
   markov_node->data = data;
   if (add(markov_chain->database, markov_node)==1)
   {
-    //todo-free-free
+    free (markov_node);  //todo- print in main?
+    free (data);
+    markov_node = NULL;
+    data = NULL;
     return NULL;
   }
   return markov_chain->database->last;
@@ -70,7 +82,11 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
 bool init_freq (MarkovNode *first_node, MarkovNode *second_node)
 {
   MarkovNodeFrequency * freq_list = calloc (1, sizeof (MarkovNodeFrequency));
-  //TODO
+  if (!freq_list)
+  {
+    freq_list=NULL;
+    return false;
+  }
   freq_list[0].markov_node = second_node;
   freq_list[0].frequency = 1;
   first_node->frequency_size = 1;
@@ -91,9 +107,9 @@ bool is_second_in_first (MarkovNode *first_node, MarkovNode *second_node)
 bool add_second_to_freq (MarkovNode *first_node, MarkovNode *second_node)
 {
   MarkovNodeFrequency * freq_list = realloc(first_node->frequency_list, sizeof
-  (MarkovNodeFrequency)*(first_node->frequency_size+1));
+                          (MarkovNodeFrequency)*(first_node->frequency_size+1));
   if (!freq_list)
-    return false;
+    return false;                                    //todo-print in main?
   first_node->frequency_list = freq_list;
   first_node->frequency_size++;
   first_node->frequency_list[first_node->frequency_size-1].markov_node =
@@ -101,6 +117,9 @@ bool add_second_to_freq (MarkovNode *first_node, MarkovNode *second_node)
   first_node->frequency_list[first_node->frequency_size-1].frequency = 1;
   return true;
 }
+
+//int fill_freq_size_to_node(MarkovChain* markov_chain);
+
 
 /**
  * Add the second markov_node to the frequency list of the first markov_node.
@@ -128,16 +147,10 @@ int add_node_to_frequency_list(MarkovNode *first_node
   return 0;
 }
 
-
-
-/**
- * Free markov_chain and all of it's content from memory
- * @param markov_chain markov_chain to free
- */
 void free_database(MarkovChain ** ptr_chain)
 {
   Node *curr = (*ptr_chain)->database->first;
-  for (int i = 0; i< (*ptr_chain)->database->size; i++)
+  for (int i = 0; i< (*ptr_chain)->database->size; i++) //todo - split:new func
   {
     free(curr->data->data);
     curr->data->data = NULL;
@@ -153,4 +166,103 @@ void free_database(MarkovChain ** ptr_chain)
   (*ptr_chain)->database=NULL;
   free (*ptr_chain);
   *ptr_chain=NULL;
+}
+
+/**
+ *
+ * @param first_node
+ * @param i
+ * @return
+ */
+MarkovNode* get_i_word_in_lls(Node *first_node, int i)
+{
+  Node *curr_node = first_node;
+  for (int j = 0; j < i; ++j)
+  {
+    curr_node = curr_node->next;
+  }
+  return curr_node->data;                             //todo - maybe i-1
+}
+
+MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
+                                   int freq_size, int i)
+{
+  int sum_freqs = 0;
+  for (int j = 0; j < freq_size; ++j)
+  {
+    int cur_sum = sum_freqs + freq_list[j].frequency;
+    if (freq_size >= (sum_freqs) && freq_size <= cur_sum)
+      return freq_list[j].markov_node;
+    sum_freqs = cur_sum;
+  }
+}
+
+bool is_ends_sentence(const char* word)
+{
+  int len = (int)strlen (word);             //todo - validate casting ok
+  if (word[len-1] == ENDS_SENTENCE)
+    return true;
+  return false;
+}
+
+
+/**
+ * Get one random MarkovNode from the given markov_chain's database.
+ * @param markov_chain
+ * @return the random MarkovNode
+ */
+MarkovNode* get_first_random_node(MarkovChain *markov_chain)
+{
+  MarkovNode* i_markov_node;
+  do
+  {
+    int i = get_random_number ((markov_chain->database)->size);  //todo-maybe -1
+    i_markov_node = get_i_word_in_lls((markov_chain->database)
+                                                      ->first, i);
+  }
+  while (is_ends_sentence (i_markov_node->data));
+  return i_markov_node;
+}
+
+int get_sum_freq_list(MarkovNode *cur_random_node)
+{
+  int count_num_of_shows = 0;
+  for (int i = 0; i < cur_random_node->frequency_size; ++i)
+  {
+    count_num_of_shows += (cur_random_node->frequency_list[i]).frequency;
+  }
+  return count_num_of_shows;
+}
+
+
+/**
+ * Choose randomly the next MarkovNode, depend on it's occurrence frequency.
+ * @param cur_markov_node current MarkovNode
+ * @return the next random MarkovNode
+ */
+MarkovNode* get_next_random_node(MarkovNode *cur_markov_node)
+{
+  int i = get_random_number (get_sum_freq_list (cur_markov_node));//todo-maybe -1
+  MarkovNode* i_markov_node = get_i_word_in_freq_list
+      (cur_markov_node->frequency_list, cur_markov_node->frequency_size, i);
+  return i_markov_node;
+}
+
+
+/**
+ * Receive markov_chain, generate and print random sentence out of it. The
+ * sentence must have at least 2 words in it.
+ * @param first_node markov_node to start with
+ * @param  max_length maximum length of chain to generate
+ */
+void generate_tweet(MarkovNode *first_node, int max_length)
+{
+  MarkovNode* cur_markov_node = first_node;
+  while (!is_ends_sentence (cur_markov_node->data) && max_length>1)
+  {
+    printf ("%s ", cur_markov_node->data);
+    cur_markov_node = get_next_random_node (first_node);
+    max_length--;
+  }
+  printf ("%s", cur_markov_node->data);
 }
