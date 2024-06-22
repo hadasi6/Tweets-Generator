@@ -180,7 +180,7 @@ void free_database(MarkovChain ** ptr_chain)
 MarkovNode* get_i_word_in_lls(Node *first_node, int i)
 {
   Node *curr_node = first_node;
-  for (int j = 0; j < i; ++j)
+  for (int j = 0; j < i; j++)
   {curr_node = curr_node->next;}
   return curr_node->data;                             //todo - maybe i-1
 }
@@ -189,12 +189,12 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
                                    int freq_size, int i)
 {
   int sum_freqs = 0;
-  for (int j = 0; j < freq_size; ++j)
+  for (int j = 0; j < freq_size; j++)
   {
-    int cur_sum = sum_freqs + freq_list[j].frequency;
-    if (i >= (sum_freqs) && i <= cur_sum)
+    sum_freqs = sum_freqs + freq_list[j].frequency;
+    if (i <= sum_freqs)
     {return freq_list[j].markov_node;}
-    sum_freqs = cur_sum;
+//    sum_freqs = cur_sum;
   }
 }
 
