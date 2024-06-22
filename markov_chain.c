@@ -25,9 +25,13 @@ int get_random_number(int max_number)
  */
 Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 {
-  int markov_size_llist = (markov_chain->database)->size;
-  if (markov_chain==NULL || !data_ptr)         //todo - necessary?
+  if (!markov_chain || !markov_chain->database || !data_ptr)
   {return NULL;}
+  int markov_size_llist = (markov_chain->database)->size;
+//  if (!data_ptr)
+//    //todo -
+//    // necessary?
+//  {return NULL;}
   Node *markov_curr_llist = (markov_chain->database)->first;
   for (int i = 0; i<markov_size_llist; i++)
   {
@@ -51,9 +55,9 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
  */
 Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
 {
-  Node *get_Node = get_node_from_database (markov_chain, data_ptr);
-  if (get_Node)
-  {return get_Node;}
+  Node *get_node = get_node_from_database (markov_chain, data_ptr);
+  if (get_node)
+  {return get_node;}
   MarkovNode *markov_node = calloc(1,sizeof (MarkovNode));
   if (!markov_node)
 //    printf (ALLOCATION_ERROR_MASSAGE); //TODO-maybe print in main?
@@ -96,11 +100,13 @@ bool init_freq (MarkovNode *first_node, MarkovNode *second_node)
 bool is_second_in_first (MarkovNode *first_node, MarkovNode *second_node)
 {
   for (int i = 0; i < first_node->frequency_size; i++)
+  {
     if (first_node->frequency_list[i].markov_node == second_node)
     {
       first_node->frequency_list[i].frequency ++;
       return true;
     }
+  }
   return false;
 }
 
@@ -129,13 +135,12 @@ bool add_second_to_freq (MarkovNode *first_node, MarkovNode *second_node)
  * @return success/failure: 0 if the process was successful, 1 if in
  * case of allocation error.
  */
-int add_node_to_frequency_list(MarkovNode *first_node
-    , MarkovNode *second_node)
+int add_node_to_frequency_list(MarkovNode *first_node, MarkovNode *second_node)
 {
   if (first_node->frequency_size==0)
   {
     if (init_freq (first_node, second_node))
-      return 0;
+    {return 0;}
     return 1;
   }
   if (is_second_in_first (first_node, second_node))
@@ -223,7 +228,7 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain)
 int get_sum_freq_list(MarkovNode *cur_random_node)
 {
   int count_num_of_shows = 0;
-  for (int i = 0; i < cur_random_node->frequency_size; ++i)
+  for (int i = 0; i < cur_random_node->frequency_size; i++)
   {count_num_of_shows += (cur_random_node->frequency_list[i]).frequency;}
   return count_num_of_shows;
 }
