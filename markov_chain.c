@@ -27,7 +27,7 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 {
   int markov_size_llist = (markov_chain->database)->size;
   if (markov_chain==NULL || !data_ptr)         //todo - necessary?
-    return NULL;
+  {return NULL;}
   Node *markov_curr_llist = (markov_chain->database)->first;
   for (int i = 0; i<markov_size_llist; i++)
   {
@@ -53,11 +53,11 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
 {
   Node *get_Node = get_node_from_database (markov_chain, data_ptr);
   if (get_Node)
-    return get_Node;
+  {return get_Node;}
   MarkovNode *markov_node = calloc(1,sizeof (MarkovNode));
   if (!markov_node)
 //    printf (ALLOCATION_ERROR_MASSAGE); //TODO-maybe print in main?
-    return NULL;
+  {return NULL;}
 
   char * data = malloc (strlen (data_ptr)+1);
   if (!data)
@@ -109,11 +109,11 @@ bool add_second_to_freq (MarkovNode *first_node, MarkovNode *second_node)
   MarkovNodeFrequency * freq_list = realloc(first_node->frequency_list, sizeof
                           (MarkovNodeFrequency)*(first_node->frequency_size+1));
   if (!freq_list)
-    return false;                                    //todo-print in main?
+  {return false;}                                    //todo-print in main?
   first_node->frequency_list = freq_list;
   first_node->frequency_size++;
   first_node->frequency_list[first_node->frequency_size-1].markov_node =
-      second_node;
+                                                                  second_node;
   first_node->frequency_list[first_node->frequency_size-1].frequency = 1;
   return true;
 }
@@ -139,11 +139,9 @@ int add_node_to_frequency_list(MarkovNode *first_node
     return 1;
   }
   if (is_second_in_first (first_node, second_node))
-  {
-    return 0;
-  }
+  {return 0;}
   if (!add_second_to_freq (first_node, second_node))
-    return 1;
+  {return 1;}
   return 0;
 }
 
@@ -178,9 +176,7 @@ MarkovNode* get_i_word_in_lls(Node *first_node, int i)
 {
   Node *curr_node = first_node;
   for (int j = 0; j < i; ++j)
-  {
-    curr_node = curr_node->next;
-  }
+  {curr_node = curr_node->next;}
   return curr_node->data;                             //todo - maybe i-1
 }
 
@@ -191,8 +187,8 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
   for (int j = 0; j < freq_size; ++j)
   {
     int cur_sum = sum_freqs + freq_list[j].frequency;
-    if (freq_size >= (sum_freqs) && freq_size <= cur_sum)
-      return freq_list[j].markov_node;
+    if (i >= (sum_freqs) && i <= cur_sum)
+    {return freq_list[j].markov_node;}
     sum_freqs = cur_sum;
   }
 }
@@ -201,7 +197,7 @@ bool is_ends_sentence(const char* word)
 {
   int len = (int)strlen (word);             //todo - validate casting ok
   if (word[len-1] == ENDS_SENTENCE)
-    return true;
+  {return true;}
   return false;
 }
 
@@ -228,12 +224,9 @@ int get_sum_freq_list(MarkovNode *cur_random_node)
 {
   int count_num_of_shows = 0;
   for (int i = 0; i < cur_random_node->frequency_size; ++i)
-  {
-    count_num_of_shows += (cur_random_node->frequency_list[i]).frequency;
-  }
+  {count_num_of_shows += (cur_random_node->frequency_list[i]).frequency;}
   return count_num_of_shows;
 }
-
 
 /**
  * Choose randomly the next MarkovNode, depend on it's occurrence frequency.

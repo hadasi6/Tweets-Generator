@@ -22,7 +22,7 @@
 bool is_number_of_arguments_valid(int argc)
 {
   if (argc != NUM_ARGC && argc != NUM_ARGC_WITH_WORDS)
-    return false;
+  {return false;}
   return true;
 }
 
@@ -30,7 +30,7 @@ bool is_file_valid(const char* input_file)
 {
   FILE *in_file = fopen (input_file, "r");
   if (!in_file)
-    return false;
+  {return false;}
   fclose (in_file);   //todo - maybe in main?
   return true;
 }
@@ -115,10 +115,26 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
   FILE *fp = fopen(argv[COMMAND_INDEX_PATH], "r");
-  MarkovChain *markov_chain;                          //todo - validate
+  MarkovChain* markov_chain = malloc (sizeof (MarkovChain));
+  if (!markov_chain)
+  {
+    printf (ALLOCATION_ERROR_MASSAGE);
+    return EXIT_FAILURE;
+  }
+  LinkedList* linked_list = malloc (sizeof (LinkedList));
+  if (!linked_list)
+  {
+    free(markov_chain);
+    markov_chain=NULL;
+    printf (ALLOCATION_ERROR_MASSAGE);
+    return EXIT_FAILURE;
+  }
+  linked_list->first=NULL;
+  markov_chain->database = linked_list;
+  srand ((unsigned int) strtol (argv[COMMAND_INDEX_SEED], NULL, 10));
   int words_to_read = 0;
   if (argc==NUM_ARGC_WITH_WORDS)
-    words_to_read = atoi(argv[COMMAND_INDEX_NUM_WORDS]);
+    words_to_read = strtol(argv[COMMAND_INDEX_NUM_WORDS], NULL, 10);
   if (fill_database (fp, words_to_read, markov_chain)==1)
   {
     printf (ALLOCATION_ERROR_MASSAGE);
@@ -133,8 +149,8 @@ int main(int argc, char *argv[])
     printf ("TWEET %d: ", i+1);
     generate_tweet (first_markov_node, MAX_TWEET_WORDS);
     if (i != argv[COMMAND_NUM_TWEETS]-1)
-      printf ("\n");
+    {printf ("\n");}
   }
-  free_database (markov_chain);
+  free_database (&markov_chain);
   return EXIT_SUCCESS;
 }
