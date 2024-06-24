@@ -198,6 +198,7 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
     sum_freqs = sum_freqs + freq_list[j].frequency;
     if (i <= sum_freqs)
     {
+//      printf ("~~~%s~~~", (freq_list[j].markov_node)->data);
       return freq_list[j].markov_node;
     }
 //    sum_freqs = cur_sum;
@@ -263,11 +264,15 @@ MarkovNode* get_next_random_node(MarkovNode *cur_markov_node)
 void generate_tweet(MarkovNode *first_node, int max_length)
 {
   MarkovNode* cur_markov_node = first_node;
-  while (!is_ends_sentence (cur_markov_node->data) && max_length>1)
+  printf ("%s", cur_markov_node->data);
+  cur_markov_node = get_next_random_node (first_node);
+  while (!is_ends_sentence (cur_markov_node->data) && max_length!=0)
   {
-    printf ("%s ", cur_markov_node->data);
-    cur_markov_node = get_next_random_node (first_node);
+    printf (" ");
+    printf ("%s", cur_markov_node->data);
+    cur_markov_node = get_next_random_node (cur_markov_node);
+//    printf ("____%s____", cur_markov_node->data);
     max_length--;
   }
-  printf ("%s", cur_markov_node->data);
+//  printf ("%s", cur_markov_node->data);
 }
