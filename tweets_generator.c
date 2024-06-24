@@ -36,11 +36,6 @@ bool is_file_valid(const char* input_file)
   return true;
 }
 
-int count_number_of_words(FILE *fp);   //todo - maybe change int to size_t/long
-
-
-
-
 
 /**
  *
@@ -131,6 +126,8 @@ int main(int argc, char *argv[])
     return EXIT_FAILURE;
   }
   linked_list->first=NULL;
+  linked_list->last=NULL;
+  linked_list->size=0;
   markov_chain->database = linked_list;
   srand ((unsigned int) strtol (argv[COMMAND_INDEX_SEED], NULL, BASE));
   int words_to_read = 0;

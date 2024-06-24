@@ -1,7 +1,7 @@
 #include "markov_chain.h"
 #include <string.h>
 
-#define ENDS_SENTENCE '.'   //todo-meybe import from tweets?
+#define ENDS_SENTENCE '.'   //todo-maybe import from tweets?
 
 
 /**
@@ -72,6 +72,8 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
   }
   data = strcpy (data, data_ptr);
   markov_node->data = data;
+  markov_node->frequency_size=0;    //todo - check !
+  markov_node->frequency_list=NULL;
   if (add(markov_chain->database, markov_node)==1)
   {
     free (markov_node);  //todo- print in main?
@@ -91,11 +93,13 @@ bool init_freq (MarkovNode *first_node, MarkovNode *second_node)
     freq_list=NULL;
     return false;
   }
+  first_node->frequency_list=freq_list;   //todo - check !
   freq_list[0].markov_node = second_node;
   freq_list[0].frequency = 1;
   first_node->frequency_size = 1;
   return true;
 }
+
 
 bool is_second_in_first (MarkovNode *first_node, MarkovNode *second_node)
 {
@@ -193,9 +197,12 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
   {
     sum_freqs = sum_freqs + freq_list[j].frequency;
     if (i <= sum_freqs)
-    {return freq_list[j].markov_node;}
+    {
+      return freq_list[j].markov_node;
+    }
 //    sum_freqs = cur_sum;
   }
+  return NULL;
 }
 
 bool is_ends_sentence(const char* word)
