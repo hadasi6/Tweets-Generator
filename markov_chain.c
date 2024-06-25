@@ -275,7 +275,8 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain)
  * Calculate the sum of frequencies in the frequency list of the given
  * MarkovNode. This sum represents the total number of transitions from the
  * given node to all its subsequent nodes.
- * @param cur_random_node Pointer to the MarkovNode whose frequency list is to be summed.
+ * @param cur_random_node Pointer to the MarkovNode whose frequency list
+ * is to be summed.
  * @return The total sum of frequencies in the frequency list.
  */
 int get_sum_freq_list(MarkovNode *cur_random_node)
