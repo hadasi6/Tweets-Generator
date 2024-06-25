@@ -241,7 +241,8 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
 /**
  * Check if a word ends with a sentence-ending character.
  * @param word The word to check
- * @return true if the word ends with a sentence-ending character, false otherwise
+ * @return true if the word ends with a sentence-ending character,
+ * false otherwise
  */
 bool is_ends_sentence(const char* word)
 {
@@ -283,7 +284,7 @@ int get_sum_freq_list(MarkovNode *cur_random_node)
 {
   int count_num_of_shows = 0;
   for (int i = 0; i < cur_random_node->frequency_size; i++)
-  {count_num_of_shows += (cur_random_node->frequency_list[i]).frequency;}
+  {count_num_of_shows += (cur_random_node->frequency_list[i]).freqxxwuency;}
   return count_num_of_shows;
 }
 
