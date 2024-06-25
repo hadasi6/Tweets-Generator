@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i <num_tweets; ++i)
   {
     MarkovNode* first_markov_node = get_first_random_node (markov_chain);
-    printf ("Tweet %d: ", i+1);
+    printf ("Tweet %d:", i+1);
     generate_tweet (first_markov_node, MAX_TWEET_WORDS);
     printf ("\n");
 //    if (i != num_tweets-1)
