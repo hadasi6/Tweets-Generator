@@ -278,7 +278,7 @@ void generate_tweet(MarkovNode *first_node, int max_length)
     cur_markov_node = get_next_random_node (cur_markov_node);
     if (is_ends_sentence (cur_markov_node->data))
     {
-      printf ("%s", cur_markov_node->data);
+      printf (" %s", cur_markov_node->data);
     }
 //    printf ("____%s____", cur_markov_node->data);
     max_length--;
