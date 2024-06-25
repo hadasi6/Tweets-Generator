@@ -39,7 +39,7 @@ bool is_file_valid(const char* input_file)
 
 /**
  *
- * @param fp
+ * @param
  * @param words_to_read
  * @param markov_chain
  * @return 0 - success, 1 - fail.

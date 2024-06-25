@@ -54,32 +54,37 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
  * returns NULL in case of memory allocation failure.
  */
 Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
-{
+{                                                                 //todo check
   Node *get_node = get_node_from_database (markov_chain, data_ptr);
   if (get_node)
   {return get_node;}
-  MarkovNode *markov_node = calloc(1,sizeof (MarkovNode));
-  if (!markov_node)
-//    printf (ALLOCATION_ERROR_MASSAGE); //TODO-maybe print in main?
-  {return NULL;}
-
-  char * data = malloc (strlen (data_ptr)+1);
-  if (!data)
+  MarkovNode *new_markov_node = calloc(1,sizeof (MarkovNode));
+  if (!new_markov_node)
   {
-    free (markov_node);
-    markov_node = NULL;
+    new_markov_node=NULL;
     return NULL;
   }
-  data = strcpy (data, data_ptr);
-  markov_node->data = data;
-  markov_node->frequency_size=0;    //todo - check !
-  markov_node->frequency_list=NULL;
-  if (add(markov_chain->database, markov_node)==1)
+  new_markov_node->data=NULL;
+  new_markov_node->frequency_list=NULL;
+  new_markov_node->frequency_size=0;
+  new_markov_node->data = malloc (strlen (data_ptr)+1);
+  if (!new_markov_node->data)
   {
-    free (markov_node);  //todo- print in main?
-    free (data);
-    markov_node = NULL;
-    data = NULL;
+    free (new_markov_node);
+    new_markov_node = NULL;
+    return NULL;
+  }
+  strcpy (new_markov_node->data, data_ptr);
+//  data = strcpy (data, data_ptr);
+//  markov_node->data = data;
+//  markov_node->frequency_size=0;    //todo - check !
+//  markov_node->frequency_list=NULL;
+  if (add(markov_chain->database, new_markov_node)==1)
+  {
+    free (new_markov_node->data);  //todo- print in main?
+    free (new_markov_node);
+    new_markov_node->data = NULL;
+    new_markov_node = NULL;
     return NULL;
   }
   return markov_chain->database->last;
