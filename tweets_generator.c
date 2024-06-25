@@ -33,6 +33,12 @@ bool is_number_of_arguments_valid(const int argc)
   return true;
 }
 
+
+/**
+ * checks if the file valid
+ * @param input_file
+ * @return true if valid, false otherwise.
+ */
 bool is_file_valid(const char* input_file)
 {
   FILE *in_file = fopen (input_file, "r");
@@ -44,11 +50,11 @@ bool is_file_valid(const char* input_file)
 
 
 /**
- *
- * @param
- * @param words_to_read
- * @param markov_chain
- * @return 0 - success, 1 - fail.
+ * Fill the markov_chain database with words from the given file.
+ * @param fp File pointer to read from.
+ * @param words_to_read Number of words to read.
+ * @param markov_chain The MarkovChain to fill.
+ * @return 0 if successful, 1 if there was an error.
  */
 int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
 {
@@ -88,6 +94,13 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
   return 0;
 }
 
+
+/**
+ * Print the generated tweets.
+ * @param markov_chain The MarkovChain to generate tweets from.
+ * @param seed The seed for random number generation.
+ * @param num_tweets The number of tweets to generate.
+ */
 void print_tweets(int num_tweets, MarkovChain* markov_chain)
 {
   for (int i = 0; i < num_tweets; ++i)
@@ -101,13 +114,13 @@ void print_tweets(int num_tweets, MarkovChain* markov_chain)
 
 
 /**
- *
  * @param argc number of arguments - 4 or 5
  * @param argv argv[0]: path.   argv[1]: seed value.(unsigned int)
  * argv[2]: number of tweets (positive int). argv[3]:path to text corpus File.
  * argv[4]: optional.(positive int) if given - the number of words to read
  * from the corpus File.
- * @return
+ * @return EXIT_SUCCESS if the program finished successfully,
+ * otherwise EXIT_FAILURE
  */
 int main(int argc, char *argv[])
 {

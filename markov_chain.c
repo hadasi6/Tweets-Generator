@@ -237,6 +237,12 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
   return NULL;
 }
 
+
+/**
+ * Check if a word ends with a sentence-ending character.
+ * @param word The word to check
+ * @return true if the word ends with a sentence-ending character, false otherwise
+ */
 bool is_ends_sentence(const char* word)
 {
   int len = (int)strlen (word);
@@ -264,6 +270,14 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain)
   return i_markov_node;
 }
 
+
+/**
+ * Calculate the sum of frequencies in the frequency list of the given
+ * MarkovNode. This sum represents the total number of transitions from the
+ * given node to all its subsequent nodes.
+ * @param cur_random_node Pointer to the MarkovNode whose frequency list is to be summed.
+ * @return The total sum of frequencies in the frequency list.
+ */
 int get_sum_freq_list(MarkovNode *cur_random_node)
 {
   int count_num_of_shows = 0;
