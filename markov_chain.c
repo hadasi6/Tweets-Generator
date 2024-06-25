@@ -284,7 +284,7 @@ int get_sum_freq_list(MarkovNode *cur_random_node)
 {
   int count_num_of_shows = 0;
   for (int i = 0; i < cur_random_node->frequency_size; i++)
-  {count_num_of_shows += (cur_random_node->frequency_list[i]).freqxxwuency;}
+  {count_num_of_shows += (cur_random_node->frequency_list[i]).frequency;}
   return count_num_of_shows;
 }
 
