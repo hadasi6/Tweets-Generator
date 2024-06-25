@@ -51,6 +51,10 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
  */
 Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
 {
+  if (!data_ptr)
+  {
+    return NULL;
+  }
   Node *get_node = get_node_from_database (markov_chain, data_ptr);
   if (get_node)
   {return get_node;}
@@ -66,7 +70,7 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
   new_markov_node->data = malloc (strlen (data_ptr)+1);
   if (!new_markov_node->data)
   {
-    free (new_markov_node);  //todo-free in main?
+    free (new_markov_node);
     new_markov_node = NULL;
     return NULL;
   }
@@ -83,6 +87,12 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
 }
 
 
+/**
+ * Initialize the frequency list of the first_node to contain the second_node.
+ * @param first_node The node to initialize the frequency list for
+ * @param second_node The node to add to the frequency list
+ * @return true if initialization was successful, false otherwise
+ */
 bool init_freq (MarkovNode *first_node, MarkovNode *second_node)
 {
   MarkovNodeFrequency * freq_list = calloc (1, sizeof (MarkovNodeFrequency));

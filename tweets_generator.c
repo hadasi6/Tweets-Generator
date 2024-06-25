@@ -26,7 +26,7 @@
  * @param argc: Number of arguments
  * @return true if the number of arguments is valid, false otherwise
  */
-bool is_number_of_arguments_valid(const int argc) //todo - changed - (const)
+bool is_number_of_arguments_valid(const int argc)
 {
   if (argc != NUM_ARGC && argc != NUM_ARGC_WITH_WORDS)
   {return false;}
@@ -38,7 +38,7 @@ bool is_file_valid(const char* input_file)
   FILE *in_file = fopen (input_file, "r");
   if (!in_file)
   {return false;}
-  fclose (in_file);   //todo - maybe in main?
+  fclose (in_file);
   return true;
 }
 
