@@ -1,7 +1,7 @@
 #include "markov_chain.h"
 #include <string.h>
 
-#define ENDS_SENTENCE '.'   //todo-maybe import from tweets?
+#define ENDS_SENTENCE '.'
 
 
 /**
@@ -26,12 +26,8 @@ int get_random_number(int max_number)
 Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 {
   if (!markov_chain || !markov_chain->database || !data_ptr)
-  {return NULL;}  // todo - check
+  {return NULL;}                                      // todo - check
   int markov_size_llist = (markov_chain->database)->size;
-//  if (!data_ptr)
-//    //todo -
-//    // necessary?
-//  {return NULL;}
   Node *markov_curr_llist = (markov_chain->database)->first;
   for (int i = 0; i<markov_size_llist; i++)
   {
@@ -205,7 +201,7 @@ MarkovNode* get_i_word_in_lls(Node *first_node, int i)
   Node *curr_node = first_node;
   for (int j = 0; j < i; j++)
   {curr_node = curr_node->next;}
-  return curr_node->data;                             //todo - maybe i-1
+  return curr_node->data;
 }
 
 
@@ -233,7 +229,7 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
 
 bool is_ends_sentence(const char* word)
 {
-  int len = (int)strlen (word);             //todo - validate casting ok
+  int len = (int)strlen (word);
   if (word[len-1] == ENDS_SENTENCE)
   {return true;}
   return false;
@@ -250,7 +246,7 @@ MarkovNode* get_first_random_node(MarkovChain *markov_chain)
   MarkovNode* i_markov_node;
   do
   {
-    int i = get_random_number ((markov_chain->database)->size);  //todo-maybe -1
+    int i = get_random_number ((markov_chain->database)->size);
     i_markov_node = get_i_word_in_lls((markov_chain->database)
                                                       ->first, i);
   }
@@ -273,7 +269,7 @@ int get_sum_freq_list(MarkovNode *cur_random_node)
  */
 MarkovNode* get_next_random_node(MarkovNode *cur_markov_node)
 {
-  int i = get_random_number (get_sum_freq_list (cur_markov_node));//todo-maybe -1
+  int i = get_random_number (get_sum_freq_list (cur_markov_node));
   MarkovNode* i_markov_node = get_i_word_in_freq_list
       (cur_markov_node->frequency_list, cur_markov_node->frequency_size, i);
   return i_markov_node;
