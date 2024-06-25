@@ -20,7 +20,13 @@
 #define MAX_TWEET_WORDS 20
 #define BASE 10
 
-bool is_number_of_arguments_valid(int argc)
+
+/**
+ * Check if the number of arguments is valid.
+ * @param argc: Number of arguments
+ * @return true if the number of arguments is valid, false otherwise
+ */
+bool is_number_of_arguments_valid(const int argc) //todo - changed - (const)
 {
   if (argc != NUM_ARGC && argc != NUM_ARGC_WITH_WORDS)
   {return false;}
@@ -54,28 +60,20 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
   {
     char *word = strtok (line, DELIMITERS);
     MarkovNode *prev_node = NULL;
-//    if (count_words==78830)
-//      printf ("hi");
     while (word != NULL && (count_words<words_to_read || words_to_read==0))
     {
-      int word_len = (int)strlen (word);         //todo - is it int??/size_t
+      int word_len = (int)strlen (word);
       char *end_ptr = word + word_len - 1;
-//      if (strcmp (word, "chills.")==0)
-//        printf ("%s",word); //todo-del
       int is_end_of_sentence = (*end_ptr == ENDS_SENTENCE);
       Node *curr_node = add_to_database (markov_chain, word);
       if (!curr_node)
       {
-//        printf (ALLOCATION_ERROR_MASSAGE);  //TODO- where to print?
-//        fclose (fp);                      // todo - maybe in main?
         return 1;
       }
       if (prev_node!=NULL)
       {
         if (add_node_to_frequency_list (prev_node, curr_node->data)==1)
         {
-//          printf (ALLOCATION_ERROR_MASSAGE); //TODO- where to print?
-//          fclose (fp);                      // todo - maybe in main?
           return 1;
         }
       }
@@ -85,14 +83,21 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
       {prev_node = curr_node->data;}
       word = strtok (NULL, DELIMITERS);
       count_words++;
-      if (count_words==78830)
-        printf ("hi");
     }
   }
-//  fclose (fp);                      // todo - maybe in main?
   return 0;
 }
 
+void print_tweets(int num_tweets, MarkovChain* markov_chain)
+{
+  for (int i = 0; i < num_tweets; ++i)
+  {
+    MarkovNode *first_markov_node = get_first_random_node (markov_chain);
+    printf ("Tweet %d:", i + 1);
+    generate_tweet (first_markov_node, MAX_TWEET_WORDS);
+    printf ("\n");
+  }
+}
 
 
 /**
@@ -142,21 +147,13 @@ int main(int argc, char *argv[])
   if (fill_database (fp, words_to_read, markov_chain)==1)
   {
     printf (ALLOCATION_ERROR_MASSAGE);
-    free_database (&markov_chain);                //todo - validate type
+    free_database (&markov_chain);
     fclose (fp);
     return EXIT_FAILURE;
   }
   fclose (fp);
   int num_tweets = (int)strtol(argv[COMMAND_NUM_TWEETS], NULL, BASE);
-  for (int i = 0; i <num_tweets; ++i)
-  {
-    MarkovNode* first_markov_node = get_first_random_node (markov_chain);
-    printf ("Tweet %d:", i+1);
-    generate_tweet (first_markov_node, MAX_TWEET_WORDS);
-    printf ("\n");
-//    if (i != num_tweets-1)
-//    {printf ("\n");}
-  }
+  print_tweets (num_tweets, markov_chain);
   free_database (&markov_chain);
   return EXIT_SUCCESS;
 }

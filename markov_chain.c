@@ -25,8 +25,8 @@ int get_random_number(int max_number)
  */
 Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 {
-//  if (!markov_chain || !markov_chain->database || !data_ptr)
-//  {return NULL;}  // todo - check
+  if (!markov_chain || !markov_chain->database || !data_ptr)
+  {return NULL;}  // todo - check
   int markov_size_llist = (markov_chain->database)->size;
 //  if (!data_ptr)
 //    //todo -
@@ -54,7 +54,7 @@ Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
  * returns NULL in case of memory allocation failure.
  */
 Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
-{                                                                 //todo check
+{
   Node *get_node = get_node_from_database (markov_chain, data_ptr);
   if (get_node)
   {return get_node;}
@@ -75,13 +75,9 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
     return NULL;
   }
   strcpy (new_markov_node->data, data_ptr);
-//  data = strcpy (data, data_ptr);
-//  markov_node->data = data;
-//  markov_node->frequency_size=0;    //todo - check !
-//  markov_node->frequency_list=NULL;
   if (add(markov_chain->database, new_markov_node)==1)
   {
-    free (new_markov_node->data);  //todo- print in main?
+    free (new_markov_node->data);
     free (new_markov_node);
     new_markov_node->data = NULL;
     new_markov_node = NULL;
@@ -89,6 +85,7 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
   }
   return markov_chain->database->last;
 }
+
 
 bool init_freq (MarkovNode *first_node, MarkovNode *second_node)
 {
@@ -98,7 +95,7 @@ bool init_freq (MarkovNode *first_node, MarkovNode *second_node)
     freq_list=NULL;
     return false;
   }
-  first_node->frequency_list=freq_list;   //todo - check !
+  first_node->frequency_list=freq_list;
   freq_list[0].markov_node = second_node;
   freq_list[0].frequency = 1;
   first_node->frequency_size = 1;
@@ -106,6 +103,13 @@ bool init_freq (MarkovNode *first_node, MarkovNode *second_node)
 }
 
 
+/**
+ * Check if the second_node is already in the frequency list of the first_node.
+ * If so, increment its frequency.
+ * @param first_node The node whose frequency list is to be checked
+ * @param second_node The node to check for in the frequency list
+ * @return true if the second_node is in the frequency list, false otherwise
+ */
 bool is_second_in_first (MarkovNode *first_node, MarkovNode *second_node)
 {
   for (int i = 0; i < first_node->frequency_size; i++)
@@ -119,12 +123,19 @@ bool is_second_in_first (MarkovNode *first_node, MarkovNode *second_node)
   return false;
 }
 
+
+/**
+ * Add the second_node to the frequency list of the first_node.
+ * @param first_node The node to add the frequency to
+ * @param second_node The node to be added to the frequency list
+ * @return true if addition was successful, false otherwise
+ */
 bool add_second_to_freq (MarkovNode *first_node, MarkovNode *second_node)
 {
   MarkovNodeFrequency * freq_list = realloc(first_node->frequency_list, sizeof
                           (MarkovNodeFrequency)*(first_node->frequency_size+1));
   if (!freq_list)
-  {return false;}                                    //todo-print in main?
+  {return false;}
   first_node->frequency_list = freq_list;
   first_node->frequency_size++;
   first_node->frequency_list[first_node->frequency_size-1].markov_node =
@@ -132,8 +143,6 @@ bool add_second_to_freq (MarkovNode *first_node, MarkovNode *second_node)
   first_node->frequency_list[first_node->frequency_size-1].frequency = 1;
   return true;
 }
-
-//int fill_freq_size_to_node(MarkovChain* markov_chain);
 
 
 /**
@@ -159,10 +168,15 @@ int add_node_to_frequency_list(MarkovNode *first_node, MarkovNode *second_node)
   return 0;
 }
 
+
+/**
+ * Free the database and all its content.
+ * @param ptr_chain Pointer to the MarkovChain to be freed
+ */
 void free_database(MarkovChain ** ptr_chain)
 {
   Node *curr = (*ptr_chain)->database->first;
-  for (int i = 0; i< (*ptr_chain)->database->size; i++) //todo - split:new func
+  for (int i = 0; i< (*ptr_chain)->database->size; i++)
   {
     free(curr->data->data);
     curr->data->data = NULL;
@@ -181,10 +195,10 @@ void free_database(MarkovChain ** ptr_chain)
 }
 
 /**
- *
- * @param first_node
- * @param i
- * @return
+ * Get the i-th word in the linked list starting from first_node.
+ * @param first_node The first node in the linked list
+ * @param i The index of the word to retrieve
+ * @return The MarkovNode at the i-th position
  */
 MarkovNode* get_i_word_in_lls(Node *first_node, int i)
 {
@@ -194,6 +208,14 @@ MarkovNode* get_i_word_in_lls(Node *first_node, int i)
   return curr_node->data;                             //todo - maybe i-1
 }
 
+
+/**
+ * Get the i-th word in the frequency list.
+ * @param freq_list The frequency list
+ * @param freq_size The size of the frequency list
+ * @param i The index of the word to retrieve
+ * @return The MarkovNode at the i-th position in the frequency list
+ */
 MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
                                    int freq_size, int i)
 {
@@ -203,10 +225,8 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
     sum_freqs = sum_freqs + freq_list[j].frequency;
     if (i < sum_freqs)
     {
-//      printf ("~~~%s~~~", (freq_list[j].markov_node)->data);
       return freq_list[j].markov_node;
     }
-//    sum_freqs = cur_sum;
   }
   return NULL;
 }
@@ -269,11 +289,8 @@ MarkovNode* get_next_random_node(MarkovNode *cur_markov_node)
 void generate_tweet(MarkovNode *first_node, int max_length)
 {
   MarkovNode* cur_markov_node = first_node;
-//  printf ("%s", cur_markov_node->data);
-//  cur_markov_node = get_next_random_node (first_node);
   while (!is_ends_sentence (cur_markov_node->data) && max_length!=0)
   {
-
     printf (" ");
     printf ("%s", cur_markov_node->data);
     cur_markov_node = get_next_random_node (cur_markov_node);
@@ -282,8 +299,6 @@ void generate_tweet(MarkovNode *first_node, int max_length)
       printf (" %s", cur_markov_node->data);
       break;
     }
-//    printf ("____%s____", cur_markov_node->data);
     max_length--;
   }
-//  printf ("%s", cur_markov_node->data);
 }
