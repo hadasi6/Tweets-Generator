@@ -153,8 +153,9 @@ int main(int argc, char *argv[])
     MarkovNode* first_markov_node = get_first_random_node (markov_chain);
     printf ("Tweet %d: ", i+1);
     generate_tweet (first_markov_node, MAX_TWEET_WORDS);
-    if (i != num_tweets-1)
-    {printf ("\n");}
+    printf ("\n");
+//    if (i != num_tweets-1)
+//    {printf ("\n");}
   }
   free_database (&markov_chain);
   return EXIT_SUCCESS;
