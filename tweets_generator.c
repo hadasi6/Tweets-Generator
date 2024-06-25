@@ -54,10 +54,14 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
   {
     char *word = strtok (line, DELIMITERS);
     MarkovNode *prev_node = NULL;
+//    if (count_words==78830)
+//      printf ("hi");
     while (word != NULL && (count_words<words_to_read || words_to_read==0))
     {
       int word_len = (int)strlen (word);         //todo - is it int??/size_t
       char *end_ptr = word + word_len - 1;
+//      if (strcmp (word, "chills.")==0)
+//        printf ("%s",word); //todo-del
       int is_end_of_sentence = (*end_ptr == ENDS_SENTENCE);
       Node *curr_node = add_to_database (markov_chain, word);
       if (!curr_node)
@@ -81,6 +85,8 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
       {prev_node = curr_node->data;}
       word = strtok (NULL, DELIMITERS);
       count_words++;
+      if (count_words==78830)
+        printf ("hi");
     }
   }
 //  fclose (fp);                      // todo - maybe in main?

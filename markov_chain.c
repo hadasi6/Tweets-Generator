@@ -25,8 +25,8 @@ int get_random_number(int max_number)
  */
 Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 {
-  if (!markov_chain || !markov_chain->database || !data_ptr)
-  {return NULL;}
+//  if (!markov_chain || !markov_chain->database || !data_ptr)
+//  {return NULL;}  // todo - check
   int markov_size_llist = (markov_chain->database)->size;
 //  if (!data_ptr)
 //    //todo -
@@ -70,7 +70,7 @@ Node* add_to_database(MarkovChain *markov_chain, char *data_ptr)
   new_markov_node->data = malloc (strlen (data_ptr)+1);
   if (!new_markov_node->data)
   {
-    free (new_markov_node);
+    free (new_markov_node);  //todo-free in main?
     new_markov_node = NULL;
     return NULL;
   }
@@ -201,7 +201,7 @@ MarkovNode* get_i_word_in_freq_list(MarkovNodeFrequency *freq_list,
   for (int j = 0; j < freq_size; j++)
   {
     sum_freqs = sum_freqs + freq_list[j].frequency;
-    if (i <= sum_freqs)
+    if (i < sum_freqs)
     {
 //      printf ("~~~%s~~~", (freq_list[j].markov_node)->data);
       return freq_list[j].markov_node;
