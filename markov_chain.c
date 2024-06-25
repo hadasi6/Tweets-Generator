@@ -26,7 +26,7 @@ int get_random_number(int max_number)
 Node* get_node_from_database(MarkovChain *markov_chain, char *data_ptr)
 {
   if (!markov_chain || !markov_chain->database || !data_ptr)
-  {return NULL;}                                      // todo - check
+  {return NULL;}
   int markov_size_llist = (markov_chain->database)->size;
   Node *markov_curr_llist = (markov_chain->database)->first;
   for (int i = 0; i<markov_size_llist; i++)
@@ -129,7 +129,7 @@ bool is_second_in_first (MarkovNode *first_node, MarkovNode *second_node)
 bool add_second_to_freq (MarkovNode *first_node, MarkovNode *second_node)
 {
   MarkovNodeFrequency * freq_list = realloc(first_node->frequency_list, sizeof
-                          (MarkovNodeFrequency)*(first_node->frequency_size+1));
+                        (MarkovNodeFrequency)*(first_node->frequency_size+1));
   if (!freq_list)
   {return false;}
   first_node->frequency_list = freq_list;
