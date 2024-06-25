@@ -54,7 +54,7 @@ int fill_database(FILE *fp, int words_to_read, MarkovChain *markov_chain)
   {
     char *word = strtok (line, DELIMITERS);
     MarkovNode *prev_node = NULL;
-    while (word != NULL)
+    while (word != NULL && (count_words<words_to_read || words_to_read==0))
     {
       int word_len = (int)strlen (word);         //todo - is it int??/size_t
       char *end_ptr = word + word_len - 1;
