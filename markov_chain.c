@@ -322,5 +322,6 @@ void generate_tweet(MarkovNode *first_node, int max_length)
       break;
     }
     max_length--;
+    
   }
 }
