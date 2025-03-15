@@ -1,4 +1,4 @@
-# Tweets Generator
+# Tweets Generator (C)
 A Markov chain text generation tool. This is a console program that reads a corpus of tweets and then generates new pseudo-tweets. It uses a Markov Chain algorithm: essentially, it learns the probability of word sequences from the input text and then produces random sentences (“tweets”) that sound like the source. This project was implemented in C, highlighting low-level memory management and data structure manipulation (linked lists to store the chain’s state).
 
 ## How it Works
